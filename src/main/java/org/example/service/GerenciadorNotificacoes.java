@@ -1,0 +1,67 @@
+package org.example.service;
+
+import org.example.config.exception.ReciboNaoEncontradoException;
+import org.example.entity.CanalNotificacao;
+import org.example.entity.ReciboImutavel;
+
+import java.time.LocalDateTime;
+import java.util.*;
+
+public class GerenciadorNotificacoes {
+
+    public List<ReciboImutavel> disparar(String destinatario, String mensagem, List<CanalNotificacao> canais) {
+        List<ReciboImutavel> recibos = new ArrayList<>();
+        int idTransacao = 1;
+
+        for(CanalNotificacao canal : canais){
+            boolean sucesso = canal.enviar(destinatario, mensagem);
+            String nomeDoCanal = canal.getClass().getSimpleName();
+            ReciboImutavel recibo = new ReciboImutavel(idTransacao, destinatario, nomeDoCanal, sucesso, LocalDateTime.now());
+            recibos.add(recibo);
+            idTransacao++;
+        }
+        return recibos;
+    }
+
+    public Set<ReciboImutavel> verificar(List<ReciboImutavel> recibos) {
+        Set<ReciboImutavel> recibosVerificados = new HashSet<>();
+        Set<Integer> idsVistos = new HashSet<>();
+
+        for(ReciboImutavel recibo : recibos) {
+            if(!idsVistos.contains(recibo.id())) {
+                recibosVerificados.add(recibo);
+                idsVistos.add(recibo.id());
+            }
+        }
+
+        return recibosVerificados;
+    }
+
+    public Map<Boolean ,Set<ReciboImutavel>> agruparPorStatus(List<ReciboImutavel> recibos) {
+        Map<Boolean ,Set<ReciboImutavel>> mapaAgrupado = new HashMap<>();
+        Set<ReciboImutavel> recibosSucesso = new HashSet<>();
+        Set<ReciboImutavel> recibosFalha = new HashSet<>();
+        for(ReciboImutavel recibo : recibos) {
+            if(recibo.sucesso()){
+                recibosSucesso.add(recibo);
+            } else {
+                recibosFalha.add(recibo);
+            }
+        }
+        mapaAgrupado.put(true, recibosSucesso);
+        mapaAgrupado.put(false, recibosFalha);
+        return mapaAgrupado;
+    }
+
+    public ReciboImutavel buscarRecibo(Integer idTransacao, List<ReciboImutavel> recibos) {
+        Map<Integer, ReciboImutavel> recibosMap = new HashMap<>();
+        for(ReciboImutavel recibo : recibos){
+            recibosMap.putIfAbsent(recibo.id(), recibo);
+        }
+        return Optional.ofNullable(recibosMap.get(idTransacao)).orElseThrow(() -> new ReciboNaoEncontradoException("Recibo não encontrado para o id: " + idTransacao));
+    }
+
+    public List<String> obterEmailsSucesso(List<ReciboImutavel> recibos) {
+        return recibos.stream().filter(recibo -> recibo.sucesso()).filter(recibo -> recibo.canal().contains("NotificacaoEmail")).map(recibo -> recibo.destinatario()).toList();
+    }
+}
