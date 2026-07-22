@@ -40,3 +40,6 @@ build/
 
 # Local build outputs
 bin/
+
+# Application configuration (contains passwords)
+src/main/resources/application.properties
