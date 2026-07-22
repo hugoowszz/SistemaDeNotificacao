@@ -88,4 +88,8 @@ public class GerenciadorNotificacoes {
     public List<String> obterContatosUnicos(List<ReciboImutavel> recibos) {
         return recibos.stream().flatMap(recibo -> Arrays.stream(recibo.destinatario().split(","))).map(String::trim).distinct().toList();
     }
+
+    public List<ReciboImutavel> ordenarLista(List<ReciboImutavel> recibos) {
+        return recibos.stream().sorted(Comparator.comparing(ReciboImutavel::dataHora).reversed()).toList();
+    }
 }
