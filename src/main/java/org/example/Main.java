@@ -25,6 +25,6 @@ public class Main {
 
         GerenciadorNotificacoes gerenciadorNotificacoes = new GerenciadorNotificacoes();
         Map<Boolean, Set<ReciboImutavel>> recibosPorStatus = gerenciadorNotificacoes.agruparPorStatus(recibos);
-        System.out.println(gerenciadorNotificacoes.calcularCusto(recibos));
+        System.out.println(gerenciadorNotificacoes.filtrarLista(recibos, recibo -> !recibo.sucesso()));
     }
 }
