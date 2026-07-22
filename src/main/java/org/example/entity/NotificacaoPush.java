@@ -1,14 +1,12 @@
 package org.example.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+
 public class NotificacaoPush extends NotificacaoBase{
-    public String getTokenDispositivo() {
-        return tokenDispositivo;
-    }
-
-    public void setTokenDispositivo(String tokenDispositivo) {
-        this.tokenDispositivo = tokenDispositivo;
-    }
-
     private String tokenDispositivo;
 
     @Override
