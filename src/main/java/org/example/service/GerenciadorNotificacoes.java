@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.config.exception.ReciboNaoEncontradoException;
 import org.example.entity.CanalNotificacao;
+import org.example.entity.FiltroAuditoria;
 import org.example.entity.ReciboImutavel;
 
 import java.time.LocalDateTime;
@@ -91,5 +92,9 @@ public class GerenciadorNotificacoes {
 
     public List<ReciboImutavel> ordenarLista(List<ReciboImutavel> recibos) {
         return recibos.stream().sorted(Comparator.comparing(ReciboImutavel::dataHora).reversed()).toList();
+    }
+
+    public List<ReciboImutavel> filtrarLista(List<ReciboImutavel> recibos, FiltroAuditoria filtro) {
+        return recibos.stream().filter(recibo -> filtro.filtrar(recibo)).toList();
     }
 }
