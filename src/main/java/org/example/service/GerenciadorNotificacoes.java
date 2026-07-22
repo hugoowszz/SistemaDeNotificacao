@@ -64,4 +64,25 @@ public class GerenciadorNotificacoes {
     public List<String> obterEmailsSucesso(List<ReciboImutavel> recibos) {
         return recibos.stream().filter(recibo -> recibo.sucesso()).filter(recibo -> recibo.canal().contains("NotificacaoEmail")).map(recibo -> recibo.destinatario()).toList();
     }
+
+    public Map<String, Double> calcularCusto(List<ReciboImutavel> recibos) {
+        Map<String, Double> custos = new HashMap<>(Map.of(
+                "Email", 0.0,
+                "Sms", 0.0,
+                "Push", 0.0
+        ));
+
+        for(ReciboImutavel recibo : recibos) {
+            if(recibo.sucesso())
+            {
+                switch (recibo.canal()) {
+                    case "NotificacaoEmail" -> custos.put("Email", custos.get("Email") + 0.01);
+                    case "NotificacaoSms" -> custos.put("Sms", custos.get("Sms") + 0.05);
+                    case "NotificacaoPush" -> custos.put("Push", custos.get("Push") + 0.02);
+                }
+            }
+        }
+
+        return custos;
+    }
 }
