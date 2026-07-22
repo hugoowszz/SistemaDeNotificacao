@@ -82,7 +82,10 @@ public class GerenciadorNotificacoes {
                 }
             }
         }
-
         return custos;
+    }
+
+    public List<String> obterContatosUnicos(List<ReciboImutavel> recibos) {
+        return recibos.stream().flatMap(recibo -> Arrays.stream(recibo.destinatario().split(","))).map(String::trim).distinct().toList();
     }
 }
