@@ -1,0 +1,6 @@
+spring.datasource.url=jdbc:postgresql://localhost:5432/db_notificacoes
+spring.datasource.username=seu_usuario
+spring.datasource.password=sua_senha_aqui
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.show-sql=true
