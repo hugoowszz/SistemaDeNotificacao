@@ -18,6 +18,7 @@ public class ReciboImutavel{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String destinatario;
+    String mensagem;
     String canal;
     Boolean sucesso;
 
