@@ -4,6 +4,7 @@ import org.example.config.exception.ReciboNaoEncontradoException;
 import org.example.entity.CanalNotificacao;
 import org.example.entity.FiltroAuditoria;
 import org.example.entity.ReciboImutavel;
+import org.example.repository.ReciboRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,22 +14,21 @@ import java.util.*;
 @Service
 public class GerenciadorNotificacoes {
 
-    private final List<CanalNotificacao> canais;
+    @Autowired
+    private List<CanalNotificacao> canais;
 
-    public GerenciadorNotificacoes(List<CanalNotificacao> canais) {
-        this.canais = canais;
-    }
+    @Autowired
+    private ReciboRepository reciboRepository;
 
     public List<ReciboImutavel> disparar(String destinatario, String mensagem) {
         List<ReciboImutavel> recibos = new ArrayList<>();
-        int idTransacao = 1;
 
         for(CanalNotificacao canal : this.canais){
             boolean sucesso = canal.enviar(destinatario, mensagem);
             String nomeDoCanal = canal.getClass().getSimpleName();
-            ReciboImutavel recibo = new ReciboImutavel(idTransacao, destinatario, nomeDoCanal, sucesso, LocalDateTime.now());
+            ReciboImutavel recibo = new ReciboImutavel(null, destinatario, mensagem, nomeDoCanal, sucesso, LocalDateTime.now());
+            reciboRepository.save(recibo);
             recibos.add(recibo);
-            idTransacao++;
         }
         return recibos;
     }
@@ -105,5 +105,17 @@ public class GerenciadorNotificacoes {
 
     public List<ReciboImutavel> filtrarLista(List<ReciboImutavel> recibos, FiltroAuditoria filtro) {
         return recibos.stream().filter(recibo -> filtro.filtrar(recibo)).toList();
+    }
+
+    public List<ReciboImutavel> buscarRecibosDeSucesso(Boolean sucesso) {
+        return reciboRepository.findAllBySucesso(sucesso);
+    }
+
+    public List<ReciboImutavel> buscarRecibosPorCanal(String canal) {
+        return reciboRepository.findAllByCanalIgnoreCase(canal);
+    }
+
+    public List<ReciboImutavel> buscarRecibosPorDominio(String dominio) {
+        return reciboRepository.findAllByDominio(dominio);
     }
 }
