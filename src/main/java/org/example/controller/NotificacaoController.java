@@ -1,6 +1,8 @@
 package org.example.controller;
 
+import jakarta.validation.Valid;
 import org.example.entity.ReciboImutavel;
+import org.example.entity.dto.request.NotificationRequest;
 import org.example.repository.ReciboRepository;
 import org.example.service.GerenciadorNotificacoes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +28,8 @@ public class NotificacaoController {
     }
 
     @PostMapping("/disparar")
-    public ResponseEntity<List<ReciboImutavel>> disparar(@RequestParam String destinatario, @RequestParam String mensagem) {
-        return ResponseEntity.ok(gerenciadorNotificacoes.disparar(destinatario, mensagem));
+    public ResponseEntity<List<ReciboImutavel>> disparar(@RequestBody @Valid NotificationRequest request) {
+        return ResponseEntity.ok(gerenciadorNotificacoes.disparar(request.destinatario(), request.mensagem()));
     }
 
     @GetMapping("/recibos/status/{sucesso}")
