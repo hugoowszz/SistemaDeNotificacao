@@ -32,4 +32,10 @@ public class GlobalExceptionHandler {
         ErrorEntity body = new ErrorEntity(HttpStatus.BAD_REQUEST, LocalDateTime.now(), "Argumentos inválidos!");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
+
+    @ExceptionHandler(UsuarioNaoEncontradoException.class)
+    public ResponseEntity<ErrorEntity> UsuarioNaoEncontradoHandler(UsuarioNaoEncontradoException exception) {
+        ErrorEntity body = new ErrorEntity(HttpStatus.NOT_FOUND, LocalDateTime.now(), "Usuario não encontrado!");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
 }
